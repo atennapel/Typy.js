@@ -43,21 +43,20 @@ typed([type\*], fn)** -> wrap the function such that all the input arguments and
 **'property' (.property)** -> checks if the object has the property
 
 
-**Object type properties**
+## Object type properties
+**any: [Type\*]** -> checks if any of the types is true 
 
-	**any: [Type\*]** -> checks if any of the types is true 
+**all: [Type\*]** -> all types must be true
 
-	**all: [Type\*]** -> all types must be true
+**forall: Type** -> the object must be an non-empty array and contain only objects of Type
 
-	**forall: Type** -> the object must be an non-empty array and contain only objects of Type
+**prop: prop or [prop], type: Type** -> checks if the object has the propert(y|ies) and they all have Type
 
-	**prop: prop or [prop], type: Type** -> checks if the object has the propert(y|ies) and they all have Type
+**struct: {(prop: Type)\*}** -> checks if the object has the props with the types and only those props
 
-	**struct: {(prop: Type)\*}** -> checks if the object has the props with the types and only those props
+**pstruct: {(prop: Type)\*}** -> like struct but the object is allowed to have other properties 
 
- 	**pstruct: {(prop: Type)\*}** -> like struct but the object is allowed to have other properties 
-
-	**val: Value** -> checks for strict equality with Value
+**val: Value** -> checks for strict equality with Value
 
 # Examples
 ```javascript
