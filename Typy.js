@@ -9,6 +9,7 @@
  * 	typed([type*], fn) -> wrap the function such that all the input arguments and
  * 		the output value must hold the type constraints else throws error.
  * 	toString(type) -> returns a string representation of the type.
+ * 	multi((Type, Fn)+) -> returns a multimethod.
  *
  * Types:
  * 	true (*)-> any type
@@ -155,11 +156,22 @@ var Typy = (function() {
 			return '{'+r.join(', ')+'}';
 		}
 	};
+
+	var multi = function() {
+		var inp = arguments;
+		return function() {
+			for(var i = 0, l = inp.length; i < l; i += 2)
+				if(hasType(inp[i], [].slice.call(arguments)))
+					return inp[i+1].apply(this, arguments);
+			throw new TypeError('TypeError: multimethod failed');
+		}
+	};
 	
 	return {
 		hasType: hasType,
 		type: type,
 		typed: typed,
-		toString: toString
+		toString: toString,
+		multi: multi
 	};
 })();

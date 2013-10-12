@@ -13,6 +13,8 @@ typed([type\*], fn)** -> wrap the function such that all the input arguments and
 	the output value must hold the type constraints else throws error.
 
 **toString(type)** -> returns a string representation of the type.
+
+**multi((Type, Fn)+)** -> returns a multimethod.
  
 # Types
 **true (\*)** -> any type
@@ -107,4 +109,18 @@ add(1, 2, 3); // TypeError
 var type = Typy.type;
 type(Number, 5); // 5
 type(Number, '5'); // TypeError
+
+var multi = Typy.multi;
+var multiAdd = multi(
+	[Number, Number], function(a, b) {
+		return type(Number, a + b);
+	},
+	[String, Number], function(a, b) {
+		return type(String, Array(b+1).join(a));
+	},
+	true, function(a, b) {return type(String, ''+a+b)}
+);
+multiAdd(1, 2); // 3
+multiAdd('a', 2); // 'aa'
+multiAdd('a', 'b'); // 'ab'
 ```
