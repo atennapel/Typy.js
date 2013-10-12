@@ -74,6 +74,8 @@ typed([type\*], fn)** -> wrap the function such that all the input arguments and
 
 **lteq: Value** -> checks if the object is <= Value
 
+**concat: [Tuple, Type]** -> checks if the object is an array of concats
+
 # Examples
 ```javascript
 var hasType = Typy.hasType;
@@ -96,6 +98,7 @@ hasType({struct: {name: String, age: Number}}, {name: 'a', age: 10}); // true
 hasType({pstruct: {name: String, age: Number}}, {name: 'a', age: 10, otherprop: 'a'}); // true
 hasType({type: Number, gt: 10, lt: 20}, 15); // true
 hasType({type: Number, gt: 10, lt: 20}, 25); // false
+hasType({concat: [[Function], {forall: Array}]}, [add, [1, 2, 3], [4, 5, 6]]); // true
 
 var typed = Typy.typed;
 var add = typed([Number, Number], Number, function(a, b) {

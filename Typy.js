@@ -43,6 +43,7 @@
  * 		lt: Value -> checks if the object is < Value
  * 		gteq: Value -> checks if the object is >= Value
  * 		lteq: Value -> checks if the object is <= Value
+ * 		concat: [Tuple, Type] -> checks if the object is an array of concats
  */
 
 var Typy = (function() {
@@ -113,6 +114,11 @@ var Typy = (function() {
 				for(var i = 0, l = skeys.length; i < l; i++) {
 					if(!hasType(t.pstruct[skeys[i]], o[skeys[i]])) return false;
 				}
+			}
+			if(t.concat) {
+				if(!Array.isArray(o)) return false;
+				var a1 = t.concat[0], a1l = a1.length;
+				if(!hasType(a1, o.slice(0, a1l)) || !hasType(t.concat[1], o.slice(a1l))) return false;
 			}
 			return true;
 		}
