@@ -137,7 +137,8 @@ var Typy = (function() {
 
 	function type(t, o, c) {
 		if(hasType(t, o)) return o;
-		if(c) return c(t, o);
+		if(typeof c == 'function') return c(t, o);
+		if(c) return c;
 		throw new TypeError('TypeError: expected '+toString(t));
 	};
 
