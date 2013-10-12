@@ -6,7 +6,7 @@ Type constraints for Javascript.
 # Functions
 **hasType(type, val)** -> returns true if the val is of type else returns false
 
-**type(type, val)** -> returns the val if the val is of type else throws TypeError
+**type(type, val) or type(type, val, callback)** -> returns the val if the val is of type else call callback or throw TypeError
 
 **typed([type\*], type, fn) or
 typed([type\*], fn)** -> wrap the function such that all the input arguments and
