@@ -54,6 +54,8 @@ typed([type\*], fn)** -> wrap the function such that all the input arguments and
 
 **forall: Type** -> the object must be an non-empty array and contain only objects of Type
 
+**propall: Type** -> like forall but checks all the properties of an object
+
 **prop: prop or [prop], ptype: Type** -> checks if the object has the propert(y|ies) and they all have Type
 
 **struct: {(prop: Type)\*}** -> checks if the object has the props with the types and only those props
@@ -75,6 +77,8 @@ typed([type\*], fn)** -> wrap the function such that all the input arguments and
 **lteq: Value** -> checks if the object is <= Value
 
 **concat: [Tuple, Type]** -> checks if the object is an array of concats
+
+**pred: Function** -> the object must pass the predicate function
 
 # Examples
 ```javascript

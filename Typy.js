@@ -33,6 +33,7 @@
  * 		any: [Type*] -> checks if any of the types is true 
  * 		all: [Type*] -> all types must be true
  * 		forall: Type -> the object must be an non-empty array and contain only objects of Type
+ * 		propall: Type -> like forall but checks all the properties of an object
  * 		prop: prop or [prop], ptype: Type -> checks if the object has the propert(y|ies) and they all have Type
  * 		struct: {(prop: Type)*} -> checks if the object has the props with the types and only those props
  * 		pstruct: {(prop: Type)*} -> like struct but the object is allowed to have other properties 
@@ -44,6 +45,7 @@
  * 		gteq: Value -> checks if the object is >= Value
  * 		lteq: Value -> checks if the object is <= Value
  * 		concat: [Tuple, Type] -> checks if the object is an array of concats
+ * 		pred: Function -> the object must pass the predicate function
  */
 
 var Typy = (function() {
@@ -102,6 +104,13 @@ var Typy = (function() {
 					if(!hasType(t.forall, o[i])) return false;
 				}
 			}
+			if(t.propall) {
+				var props = Object.keys(o);
+				if(props.length == 0) return false;
+				for(var i = 0, l = props.length; i < l; i++) {
+					if(!hasType(t.propall, o[props[i]])) return false;
+				}
+			}
 			if(t.struct) {
 				var skeys = Object.keys(t.struct), okeys = Object.keys(o);
 				if(skeys.length != okeys.length) return false;
@@ -120,6 +129,7 @@ var Typy = (function() {
 				var a1 = t.concat[0], a1l = a1.length;
 				if(!hasType(a1, o.slice(0, a1l)) || !hasType(t.concat[1], o.slice(a1l))) return false;
 			}
+			if(t.pred && !t.pred(o)) return false;
 			return true;
 		}
 		return false;
