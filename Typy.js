@@ -28,13 +28,20 @@
  * 	'property' (.property) -> checks if the object has the property
  *
  * 	Object type properties:
+ * 		type: Type -> checks if the type is true
  * 		any: [Type*] -> checks if any of the types is true 
  * 		all: [Type*] -> all types must be true
  * 		forall: Type -> the object must be an non-empty array and contain only objects of Type
- * 		prop: prop or [prop], type: Type -> checks if the object has the propert(y|ies) and they all have Type
+ * 		prop: prop or [prop], ptype: Type -> checks if the object has the propert(y|ies) and they all have Type
  * 		struct: {(prop: Type)*} -> checks if the object has the props with the types and only those props
  * 		pstruct: {(prop: Type)*} -> like struct but the object is allowed to have other properties 
- * 		val: Value -> checks for strict equality with Value
+ * 		not: Type -> checks if object is of any other type than Type
+ * 		eq: Value -> checks for strict equality with Value
+ * 		neq: Value -> checks for strict inequality with Value
+ * 		gt: Value -> checks if the object is > Value
+ * 		lt: Value -> checks if the object is < Value
+ * 		gteq: Value -> checks if the object is >= Value
+ * 		lteq: Value -> checks if the object is <= Value
  */
 
 var Typy = (function() {
@@ -63,17 +70,25 @@ var Typy = (function() {
 					if(hasType(t.any[i], o)) break;
 				}
 			}
-			if(t.val) {
-				if(t.val !== o) return false;
-			}
-			if(t.prop && t.type) {
+			if(t.not && hasType(t.not, o)) return false;
+			if(t.type && !hasType(t.type, o)) return false;
+
+			if(t.eq && t.eq !== o) return false;
+			if(t.neq && t.neq === o) return false;
+			if(t.gt && !(o > t.gt)) return false;
+			if(t.lt && !(o < t.lt)) return false;
+			if(t.gteq && !(o >= t.gteq)) return false;
+			if(t.lteq && !(o <= t.lteq)) return false;
+
+			if(t.prop && t.ptype) {
 				if(Array.isArray(t.prop)) {
 					for(var i = 0, l = t.prop.length; i < l; i++)
-						if(o[t.prop[i]] === undefined || !hasType(t.type, o[t.prop[i]]))
+						if(o[t.prop[i]] === undefined || !hasType(t.ptype, o[t.prop[i]]))
 							return false;
-				} else if(o[t.prop] === undefined || !hasType(t.type, o[t.prop]))
+				} else if(o[t.prop] === undefined || !hasType(t.ptype, o[t.prop]))
 					return false;
 			}
+
 			if(t.all) {
 				if(t.all.length != 0) for(var i = 0, l = t.all.length; i < l; i++) {
 					if(!hasType(t.all[i], o)) return false;
