@@ -4,38 +4,60 @@ Typy.js
 Type constraints for Javascript.
 
 # Functions
-hasType(type, val) -> returns true if the val is of type else returns false
-type(type, val) -> returns the val if the val is of type else throws TypeError
-typed([type*], type, fn) or
-typed([type*], fn) -> wrap the function such that all the input arguments and
+**hasType(type, val)** -> returns true if the val is of type else returns false
+
+**type(type, val)** -> returns the val if the val is of type else throws TypeError
+
+**typed([type\*], type, fn) or
+typed([type\*], fn)** -> wrap the function such that all the input arguments and
 	the output value must hold the type constraints else throws error.
-toString(type) -> returns a string representation of the type.
+
+**toString(type)** -> returns a string representation of the type.
  
 # Types
-true (*)-> any type
-false (-) -> no type
-number -> checks for equality with that number
+**true (\*)** -> any type
+
+**false (-)** -> no type
+
+**number** -> checks for equality with that number
+
  
-Number -> Number or number
-Function -> Function or function
-String -> String or string
-Boolean -> Boolean or boolean
-Object -> Object or object
-Array -> Array
+**Number** -> Number or number
 
-any constructor -> instanceof check
+**Function** -> Function or function
 
-[Type*] -> tuple, checks if the object is an array with the same types in the same order
-'property' (.property) -> checks if the object has the property
+**String** -> String or string
 
-Object type properties:
-	any: [Type*] -> checks if any of the types is true 
-	all: [Type*] -> all types must be true
-	forall: Type -> the object must be an non-empty array and contain only objects of Type
-	prop: prop or [prop], type: Type -> checks if the object has the propert(y|ies) and they all have Type
-	struct: {(prop: Type)*} -> checks if the object has the props with the types and only those props
- 	pstruct: {(prop: Type)*} -> like struct but the object is allowed to have other properties 
-	val: Value -> checks for strict equality with Value
+**Boolean** -> Boolean or boolean
+
+**Object** -> Object or object
+
+**Array** -> Array
+
+
+**any constructor** -> instanceof check
+
+
+**[Type\*]** -> tuple, checks if the object is an array with the same types in the same order
+
+**'property' (.property)** -> checks if the object has the property
+
+
+**Object type properties**
+
+	**any: [Type\*]** -> checks if any of the types is true 
+
+	**all: [Type\*]** -> all types must be true
+
+	**forall: Type** -> the object must be an non-empty array and contain only objects of Type
+
+	**prop: prop or [prop], type: Type** -> checks if the object has the propert(y|ies) and they all have Type
+
+	**struct: {(prop: Type)\*}** -> checks if the object has the props with the types and only those props
+
+ 	**pstruct: {(prop: Type)\*}** -> like struct but the object is allowed to have other properties 
+
+	**val: Value** -> checks for strict equality with Value
 
 # Examples
 ```javascript
