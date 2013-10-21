@@ -1,51 +1,6 @@
 /* Typy.js
  * @author: Albert ten Napel
- * @version: 1.0
- *
- * Functions:
- * 	hasType(type, val) -> returns true if the val is of type else returns false
- * 	type(type, val) or type(type, val, callback) -> returns the val if the val is of type else call callback or throw TypeError
- * 	typed([type*], type, fn) or
- * 	typed([type*], fn) -> wrap the function such that all the input arguments and
- * 		the output value must hold the type constraints else throws error.
- * 	toString(type) -> returns a string representation of the type.
- * 	multi((Type, Fn)+) -> returns a multimethod.
- *
- * Types:
- * 	true (*)-> any type
- * 	false (-) -> no type
- * 	number -> checks for equality with that number
- *
- * 	Number -> Number or number
- * 	Function -> Function or function
- * 	String -> String or string
- * 	Boolean -> Boolean or boolean
- * 	Object -> Object or object
- * 	Array -> Array
- *
- * 	any constructor -> instanceof check
- *
- * 	[Type*] -> tuple, checks if the object is an array with the same types in the same order
- * 	'property' (.property) -> checks if the object has the property
- *
- * 	Object type properties:
- * 		type: Type -> checks if the type is true
- * 		any: [Type*] -> checks if any of the types is true 
- * 		all: [Type*] -> all types must be true
- * 		forall: Type -> the object must be an non-empty array and contain only objects of Type
- * 		propall: Type -> like forall but checks all the properties of an object
- * 		prop: prop or [prop], ptype: Type -> checks if the object has the propert(y|ies) and they all have Type
- * 		struct: {(prop: Type)*} -> checks if the object has the props with the types and only those props
- * 		pstruct: {(prop: Type)*} -> like struct but the object is allowed to have other properties 
- * 		not: Type -> checks if object is of any other type than Type
- * 		eq: Value -> checks for strict equality with Value
- * 		neq: Value -> checks for strict inequality with Value
- * 		gt: Value -> checks if the object is > Value
- * 		lt: Value -> checks if the object is < Value
- * 		gteq: Value -> checks if the object is >= Value
- * 		lteq: Value -> checks if the object is <= Value
- * 		concat: [Tuple, Type] -> checks if the object is an array of concats
- * 		pred: Function -> the object must pass the predicate function
+ * @version: 1.2
  */
 
 var Typy = (function() {
@@ -70,8 +25,11 @@ var Typy = (function() {
 		if(typeof t == 'object') {
 			if(t.any) {
 				if(t.any.length == 0) return false;
-				else for(var i = 0, l = t.any.length; i < l; i++) {
-					if(hasType(t.any[i], o)) break;
+				else {
+					var skip = false;
+					for(var i = 0, l = t.any.length; i < l; i++)
+						if(hasType(t.any[i], o)) {skip = true; break}
+					if(!skip) return false;
 				}
 			}
 			if(t.not && hasType(t.not, o)) return false;
@@ -174,18 +132,30 @@ var Typy = (function() {
 		}
 	};
 
-	var multi = function() {
+	function multi() {
 		var inp = [].slice.call(arguments);
+		var fallBackV;
 		var t = function() {
-			for(var i = 0, l = inp.length; i < l; i += 2)
-				if(hasType(inp[i], [].slice.call(arguments)))
-					return inp[i+1].apply(this, arguments);
+			for(var i = 0, l = inp.length; i < l; i += 2) {
+				var a = inp[i], b = inp[i+1];
+				if(a !== undefined && b !== undefined && hasType(a, [].slice.call(arguments))) {
+					if(typeof b == 'function')
+						return inp[i+1].apply(this, arguments);
+					else return b;
+				}
+			}
+			if(fallBackV !== undefined) {
+				if(typeof fallBackV == 'function')
+					return fallBackV.apply(this, arguments);
+				else return fallBackV;
+			}
 			throw new TypeError('TypeError: multimethod failed');
 		}
 		t.add = function() {
 			inp.push.apply(inp, arguments);
 			return t;
-		}
+		};
+		t.fallback = function(v) {fallBackV = v; return t};
 		return t;
 	};
 	
@@ -197,3 +167,5 @@ var Typy = (function() {
 		multi: multi
 	};
 })();
+
+if(typeof module !== 'undefined' && module.exports) module.exports = Typy;

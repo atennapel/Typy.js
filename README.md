@@ -14,7 +14,13 @@ typed([type\*], fn)** -> wrap the function such that all the input arguments and
 
 **toString(type)** -> returns a string representation of the type.
 
-**multi((Type, Fn)+)** -> returns a multimethod.
+**multi((Type, Any)+)** -> returns a multimethod.
+
+The returned multimethod also has the following functions:
+
+**multiMtd.add((Type, Any)+)** -> add more cases to this multimethod
+
+**multiMtd.fallback(val)** -> if none of this cases match this value is returned (or called if it's a function).
  
 # Types
 **true (\*)** -> any type
