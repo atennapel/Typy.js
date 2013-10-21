@@ -175,13 +175,18 @@ var Typy = (function() {
 	};
 
 	var multi = function() {
-		var inp = arguments;
-		return function() {
+		var inp = [].slice.call(arguments);
+		var t = function() {
 			for(var i = 0, l = inp.length; i < l; i += 2)
 				if(hasType(inp[i], [].slice.call(arguments)))
 					return inp[i+1].apply(this, arguments);
 			throw new TypeError('TypeError: multimethod failed');
 		}
+		t.add = function() {
+			inp.push.apply(inp, arguments);
+			return t;
+		}
+		return t;
 	};
 	
 	return {
